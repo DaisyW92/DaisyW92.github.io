@@ -155,13 +155,6 @@
 
   
   <url>
-    <loc>http://starskydata.com/tags/%E6%97%85%E8%A1%8C/</loc>
-    <lastmod>2022-12-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>http://starskydata.com/tags/java%E5%9F%BA%E7%A1%80/</loc>
     <lastmod>2022-12-21</lastmod>
     <changefreq>weekly</changefreq>
@@ -169,7 +162,7 @@
   </url>
   
   <url>
-    <loc>http://starskydata.com/tags/HTTPS/</loc>
+    <loc>http://starskydata.com/tags/%E6%97%85%E8%A1%8C/</loc>
     <lastmod>2022-12-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -191,6 +184,13 @@
   
   <url>
     <loc>http://starskydata.com/tags/java/</loc>
+    <lastmod>2022-12-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://starskydata.com/tags/HTTPS/</loc>
     <lastmod>2022-12-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -220,13 +220,6 @@
 
   
   <url>
-    <loc>http://starskydata.com/categories/%E6%97%85%E8%A1%8C/</loc>
-    <lastmod>2022-12-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>http://starskydata.com/categories/java%E5%9F%BA%E7%A1%80/</loc>
     <lastmod>2022-12-21</lastmod>
     <changefreq>weekly</changefreq>
@@ -234,7 +227,7 @@
   </url>
   
   <url>
-    <loc>http://starskydata.com/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/</loc>
+    <loc>http://starskydata.com/categories/%E6%97%85%E8%A1%8C/</loc>
     <lastmod>2022-12-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -242,6 +235,13 @@
   
   <url>
     <loc>http://starskydata.com/categories/spring-cloud/</loc>
+    <lastmod>2022-12-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://starskydata.com/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/</loc>
     <lastmod>2022-12-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
