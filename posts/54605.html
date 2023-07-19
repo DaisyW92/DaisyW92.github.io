@@ -1,0 +1,286 @@
+<!DOCTYPE html><html lang="cn" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>字节码插桩 | Daisy's Blog</title><meta name="author" content="Daisy"><meta name="copyright" content="Daisy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="一、应用场景实际提供了一种虚拟机级别的aop java.lang.instrument 包的具体实现，依赖于  JVMTI（Java Virtual Machine Tool Interface） 这是一套由 Java 虚拟机提供的，为 JVM 相关工具提供的本地编程接口集合。JVMTI 是从 Ja"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://starskydata.com/posts/54605.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="sDPUs3nTAhgMGYrvOmlNqi1vDLQTcKL1X6tCvY_f3ns"/><meta name="baidu-site-verification" content="code-EWEBQNmKjY"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  dateSuffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '字节码插桩',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-07-19 14:17:40'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">21</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">10</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/pink.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Daisy's Blog"><span class="site-name">Daisy's Blog</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">字节码插桩</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">Created</span><time datetime="2022-11-16T20:00:00.000Z" title="Created 2022-11-17 00:00:00">2022-11-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/java%E5%9F%BA%E7%A1%80/">java基础</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="字节码插桩"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="一、应用场景"><a href="#一、应用场景" class="headerlink" title="一、应用场景"></a>一、应用场景</h1><p>实际提供了一种虚拟机级别的aop</p>
+<p>java.lang.instrument 包的具体实现，依赖于 </p>
+<p>JVMTI（Java Virtual Machine Tool Interface） 这是一套由 Java 虚拟机提供的，为 JVM 相关工具提供的本地编程接口集合。JVMTI 是从 Java SE 5 开始引入，JVMTI 提供了一套“代理”程序机制，可以支持第三方工具程序以代理的方式连接和访问 JVM，并利用 JVMTI 提供的编程接口，完成很多跟 JVM 相关的功能。事实上， </p>
+<p>java.lang.instrument 包的实现，也就是基于这种机制的</p>
+<p>如上有2个 </p>
+<p>premain() 方法，当1个参数和2个参数的premain()的方法同时存在的时候， </p>
+<p>premain(String agentArgs) 将被忽略</p>
+<p>可以添加任意多个javaagent。所有的java agent会按照你定义的顺序执行</p>
+<p>获取某个方法在一段时间内的执行时间</p>
+<ol>
+<li>在方法前后加时间戳（硬编码）</li>
+<li>Spring AOP 切面</li>
+<li>字节码插桩（零侵入）</li>
+</ol>
+<p><img src="../../images/image-20220408151802110-8692977.png" alt=""></p>
+<p>ELK统一日志整理，但是追踪复杂</p>
+<p>apm（application performance management）</p>
+<h1 id="二、技术实现"><a href="#二、技术实现" class="headerlink" title="二、技术实现"></a>二、技术实现</h1><h2 id="字节码插桩用到的技术"><a href="#字节码插桩用到的技术" class="headerlink" title="字节码插桩用到的技术"></a>字节码插桩用到的技术</h2><ol>
+<li>javaagent 代理拦截（插桩的入口）</li>
+</ol>
+<p><img src="../../images/image-20220408151824283.png" alt=""></p>
+<p><img src="../../images/image-20220408151834330.png" alt=""></p>
+<p>javaagent 动态拦截</p>
+<p>spring，dubbo，mybatis，netty 底层都是javassist，javassist和cglib底层都是asm</p>
+<p><img src="../../images/image-20220408151848132.png" alt=""></p>
+<h2 id="javassist字节码修改工具（怎么插）"><a href="#javassist字节码修改工具（怎么插）" class="headerlink" title="javassist字节码修改工具（怎么插）"></a>javassist字节码修改工具（怎么插）</h2><h3 id="单方法示例"><a href="#单方法示例" class="headerlink" title="单方法示例"></a>单方法示例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// javaagent 入口方法</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">premain</span><span class="params">(String arg, Instrumentation instrumentation)</span> &#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;Hello, java agent! &quot;</span>);</span><br><span class="line">    <span class="comment">//基于 javaassist 工具, 在运行时修改class字节码，就是所谓的插桩</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> <span class="type">ClassPool</span> <span class="variable">pool</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ClassPool</span>();</span><br><span class="line">    pool.appendSystemPath();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//打印所有的idea 中类</span></span><br><span class="line">    instrumentation.addTransformer(<span class="keyword">new</span> <span class="title class_">ClassFileTransformer</span>() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="type">byte</span>[] transform(ClassLoader loader, String className, Class&lt;?&gt; classBeingRedefined, ProtectionDomain protectionDomain, <span class="type">byte</span>[] classfileBuffer) <span class="keyword">throws</span> IllegalClassFormatException &#123;</span><br><span class="line">            <span class="keyword">if</span> (!<span class="string">&quot;indi/daisy/mock/agent/UserService&quot;</span>.equals(className)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="type">CtClass</span> <span class="variable">ctClass</span> <span class="operator">=</span> pool.get(<span class="string">&quot;indi.daisy.mock.agent.UserService&quot;</span>);</span><br><span class="line">                <span class="type">CtMethod</span> <span class="variable">sayHello</span> <span class="operator">=</span> ctClass.getDeclaredMethod(<span class="string">&quot;sayHello&quot;</span>);</span><br><span class="line">                <span class="comment">//1. 复制方法</span></span><br><span class="line">                <span class="type">CtMethod</span> <span class="variable">copy</span> <span class="operator">=</span> CtNewMethod.copy(sayHello, ctClass, <span class="literal">null</span>);</span><br><span class="line">                copy.setName(<span class="string">&quot;sayHello$agent&quot;</span>);</span><br><span class="line">                ctClass.addMethod(copy);</span><br><span class="line">                <span class="comment">//2. 改变原有方法</span></span><br><span class="line">                sayHello.setBody(<span class="string">&quot;        long begin = System.currentTimeMillis();\n&quot;</span> +</span><br><span class="line">                        <span class="string">&quot;        sayHello$agent($1);\n&quot;</span> +</span><br><span class="line">                        <span class="string">&quot;        long end = System.currentTimeMillis();\n&quot;</span> +</span><br><span class="line">                        <span class="string">&quot;        System.out.println(end - begin);&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span> ctClass.toBytecode();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="类所有方法示例"><a href="#类所有方法示例" class="headerlink" title="类所有方法示例"></a>类所有方法示例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// javaagent 入口方法</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">premain</span><span class="params">(String arg, Instrumentation instrumentation)</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">String</span> <span class="variable">config</span> <span class="operator">=</span> arg;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">ClassPool</span> <span class="variable">pool</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ClassPool</span>();</span><br><span class="line">    pool.appendSystemPath();</span><br><span class="line"></span><br><span class="line">    instrumentation.addTransformer(<span class="keyword">new</span> <span class="title class_">ClassFileTransformer</span>() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="type">byte</span>[] transform(ClassLoader loader, String className, Class&lt;?&gt; classBeingRedefined, ProtectionDomain protectionDomain, <span class="type">byte</span>[] classfileBuffer) <span class="keyword">throws</span> IllegalClassFormatException &#123;</span><br><span class="line">            <span class="keyword">if</span> (className == <span class="literal">null</span> || className.replaceAll(<span class="string">&quot;/&quot;</span>, <span class="string">&quot;.&quot;</span>).startsWith(<span class="string">&quot;/&quot;</span>)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                className = className.replaceAll(<span class="string">&quot;/&quot;</span>, <span class="string">&quot;.&quot;</span>);</span><br><span class="line">                <span class="type">CtClass</span> <span class="variable">ctClass</span> <span class="operator">=</span> pool.get(className);</span><br><span class="line">                <span class="comment">//获取所有方法</span></span><br><span class="line">                <span class="keyword">for</span> (CtMethod declaredMethod : ctClass.getDeclaredMethods()) &#123;</span><br><span class="line">                    newMethod(declaredMethod);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> ctClass.toBytecode();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> CtMethod <span class="title function_">newMethod</span><span class="params">(CtMethod oldMethod)</span> <span class="keyword">throws</span> CannotCompileException, NotFoundException &#123;</span><br><span class="line">    <span class="type">CtMethod</span> <span class="variable">copy</span> <span class="operator">=</span> CtNewMethod.copy(oldMethod, oldMethod.getDeclaringClass(), <span class="literal">null</span>);</span><br><span class="line">    copy.setName(oldMethod.getName() + <span class="string">&quot;$agent&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (oldMethod.getReturnType().equals(CtClass.voidType)) &#123;</span><br><span class="line">        oldMethod.setBody(String.format(voidSource, oldMethod.getName()));</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        oldMethod.setBody(String.format(source, oldMethod.getName()));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> copy;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="type">String</span> <span class="variable">source</span> <span class="operator">=</span> <span class="string">&quot;&#123;\n&quot;</span> +</span><br><span class="line">        <span class="string">&quot;        long begin = System.currentTimeMillis();\n&quot;</span> +</span><br><span class="line">        <span class="string">&quot;        Object result;\n&quot;</span> +</span><br><span class="line">        <span class="string">&quot;        try &#123;\n&quot;</span> +</span><br><span class="line">        <span class="string">&quot;            result = ($w)%s$agent($$);\n&quot;</span> +</span><br><span class="line">        <span class="string">&quot;        &#125; finally &#123;\n&quot;</span> +</span><br><span class="line">        <span class="string">&quot;            long end = System.currentTimeMillis();\n&quot;</span> +</span><br><span class="line">        <span class="string">&quot;            System.out.println(end - begin);\n&quot;</span> +</span><br><span class="line">        <span class="string">&quot;        &#125;\n&quot;</span> +</span><br><span class="line">        <span class="string">&quot;        return ($r) result;\n&quot;</span> +</span><br><span class="line">        <span class="string">&quot;    &#125;&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="type">String</span> <span class="variable">voidSource</span> <span class="operator">=</span> <span class="string">&quot;&#123;\n&quot;</span> +</span><br><span class="line">        <span class="string">&quot;        long begin = System.currentTimeMillis();\n&quot;</span> +</span><br><span class="line">        <span class="string">&quot;        try &#123;\n&quot;</span> +</span><br><span class="line">        <span class="string">&quot;            %s$agent($$);\n&quot;</span> +</span><br><span class="line">        <span class="string">&quot;        &#125; finally &#123;\n&quot;</span> +</span><br><span class="line">        <span class="string">&quot;            long end = System.currentTimeMillis();\n&quot;</span> +</span><br><span class="line">        <span class="string">&quot;            System.out.println(end - begin);\n&quot;</span> +</span><br><span class="line">        <span class="string">&quot;        &#125;\n&quot;</span> +</span><br><span class="line">        <span class="string">&quot;    &#125;&quot;</span>;</span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="http://starskydata.com">Daisy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://starskydata.com/posts/54605.html">http://starskydata.com/posts/54605.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/java%E5%9F%BA%E7%A1%80/">java基础</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/59136.html" title="使用nacos做配置中心"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">使用nacos做配置中心</div></div></a></div><div class="next-post pull-right"><a href="/posts/26010.html" title="深入浅出HTTPS"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">深入浅出HTTPS</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/posts/35230.html" title="ArrayList"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-10-13</div><div class="title">ArrayList</div></div></a></div><div><a href="/posts/28372.html" title="Java 加密与解密的艺术"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-12-21</div><div class="title">Java 加密与解密的艺术</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> Comment</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Daisy</div><div class="author-info__description">分享计算机相关，旅行，美妆，一个平凡人的生活点滴</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">21</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">10</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.</span> <span class="toc-text">一、应用场景</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%8A%80%E6%9C%AF%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.</span> <span class="toc-text">二、技术实现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%97%E8%8A%82%E7%A0%81%E6%8F%92%E6%A1%A9%E7%94%A8%E5%88%B0%E7%9A%84%E6%8A%80%E6%9C%AF"><span class="toc-number">2.1.</span> <span class="toc-text">字节码插桩用到的技术</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#javassist%E5%AD%97%E8%8A%82%E7%A0%81%E4%BF%AE%E6%94%B9%E5%B7%A5%E5%85%B7%EF%BC%88%E6%80%8E%E4%B9%88%E6%8F%92%EF%BC%89"><span class="toc-number">2.2.</span> <span class="toc-text">javassist字节码修改工具（怎么插）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%95%E6%96%B9%E6%B3%95%E7%A4%BA%E4%BE%8B"><span class="toc-number">2.2.1.</span> <span class="toc-text">单方法示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B1%BB%E6%89%80%E6%9C%89%E6%96%B9%E6%B3%95%E7%A4%BA%E4%BE%8B"><span class="toc-number">2.2.2.</span> <span class="toc-text">类所有方法示例</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/19528.html" title="SQL 基础">SQL 基础</a><time datetime="2023-07-17T12:20:53.000Z" title="Created 2023-07-17 16:20:53">2023-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/53592.html" title="数据库系统">数据库系统</a><time datetime="2023-07-17T12:20:53.000Z" title="Created 2023-07-17 16:20:53">2023-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/6358.html" title="Mysql (一)">Mysql (一)</a><time datetime="2023-07-17T12:20:53.000Z" title="Created 2023-07-17 16:20:53">2023-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/18640.html" title="Mysql (三)">Mysql (三)</a><time datetime="2023-07-17T12:20:53.000Z" title="Created 2023-07-17 16:20:53">2023-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/55410.html" title="Mysql (二)">Mysql (二)</a><time datetime="2023-07-17T12:20:53.000Z" title="Created 2023-07-17 16:20:53">2023-07-17</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/img/pink.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Daisy</div><div class="footer_custom_text">Hi, welcome to Daisy's blog.</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="Scroll To Comments"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, '']
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typesetPromise()
+}</script><script>(() => {
+  const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaid.length === 0) return
+  const runMermaid = () => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'drak' : 'default'
+
+    Array.from($mermaid).forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const mermaidThemeConfig = '%%{init:{ \'theme\':\'' + theme + '\'}}%%\n'
+      const mermaidID = 'mermaid-' + index
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+
+      const renderV10 = () => {
+        renderFn.then(({svg}) => {
+          mermaidSrc.insertAdjacentHTML('afterend', svg)
+        })
+      }
+
+      const renderV9 = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      typeof renderFn === 'string' ? renderV9(renderFn) : renderV10()
+    })
+  }
+
+  const loadMermaid = () => {
+    window.loadMermaid ? runMermaid() : getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+  }
+
+  btf.addModeChange('mermaid', runMermaid)
+
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script><script>function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: '86359bb4e81712c59c38',
+      clientSecret: '513930a00de8718c7c1fab2fe09128ec5ef94042',
+      repo: 'DaisyW92.github.io',
+      owner: 'DaisyW92',
+      admin: ['DaisyW92'],
+      id: 'fb76bd29fb7ecc17dcb8d8a3adfa85cb',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+    getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.textContent= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !true) {
+  if (true) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><script defer="defer" id="fluttering_ribbon" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

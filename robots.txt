@@ -1,0 +1,8 @@
+# hexo robots.txt
+User-agent: *
+Allow: /
+Allow: /archives/
+
+
+Sitemap: http://starskydata.com/sitemap.xml
+Sitemap: https://starskydata.com/baidusitemap.xml

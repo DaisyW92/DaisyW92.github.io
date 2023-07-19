@@ -1,0 +1,520 @@
+<!DOCTYPE html><html lang="cn" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>深入浅出HTTPS | Daisy's Blog</title><meta name="author" content="Daisy"><meta name="copyright" content="Daisy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="一、HTTP介绍1.1 什么是webHTTP（HyperText Transfer Protocol，超文本传输协议  URL的官方名称叫作统一资源标识符（Uniform ResourceLocator）  80是HTTP协议的默认端口  HTML超文本标记语言  1.2 理解HTTPHTTP的模型"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://starskydata.com/posts/26010.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="sDPUs3nTAhgMGYrvOmlNqi1vDLQTcKL1X6tCvY_f3ns"/><meta name="baidu-site-verification" content="code-EWEBQNmKjY"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  dateSuffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '深入浅出HTTPS',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-11-05 12:33:16'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">21</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">10</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/pink.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Daisy's Blog"><span class="site-name">Daisy's Blog</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">深入浅出HTTPS</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">Created</span><time datetime="2022-10-30T20:00:00.000Z" title="Created 2022-10-31 00:00:00">2022-10-31</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/">计算机</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="深入浅出HTTPS"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="一、HTTP介绍"><a href="#一、HTTP介绍" class="headerlink" title="一、HTTP介绍"></a>一、HTTP介绍</h2><h3 id="1-1-什么是web"><a href="#1-1-什么是web" class="headerlink" title="1.1 什么是web"></a>1.1 什么是web</h3><p>HTTP（HyperText Transfer Protocol，超文本传输协议 </p>
+<p>URL的官方名称叫作统一资源标识符（Uniform ResourceLocator） </p>
+<p>80是HTTP协议的默认端口 </p>
+<p>HTML超文本标记语言 </p>
+<h3 id="1-2-理解HTTP"><a href="#1-2-理解HTTP" class="headerlink" title="1.2 理解HTTP"></a>1.2 理解HTTP</h3><p>HTTP的模型很简单，是一个B/S模型，由客户端和服务器组成，交互流程很简单。 </p>
+<ul>
+<li><p>◎一个HTTP客户端发送请求至HTTP服务器，然后等待服务器的响应。 </p>
+</li>
+<li><p>◎一个HTTP服务器负责监听端口（默认是80），然后等待客户端的请求，处理完成后，回复给客户端。 </p>
+</li>
+</ul>
+<p>HTTP消息由三部分组成。 </p>
+<ul>
+<li><p>◎请求行或响应行。 </p>
+</li>
+<li><p>◎HTTP头部。 </p>
+</li>
+<li><p>◎HTML实体，包括请求实体和响应实体。 </p>
+</li>
+</ul>
+<h3 id="1-3-网络模型"><a href="#1-3-网络模型" class="headerlink" title="1.3 网络模型"></a>1.3 网络模型</h3><p>应用层：HTTP，FTP，邮件协议 </p>
+<p>传输层：TCP，UDP </p>
+<p>网络层：IP </p>
+<p>链路层：以太网包头 </p>
+<h3 id="1-4-协议安全分析"><a href="#1-4-协议安全分析" class="headerlink" title="1.4 协议安全分析"></a>1.4 协议安全分析</h3><h3 id="1-5-web应用安全"><a href="#1-5-web应用安全" class="headerlink" title="1.5 web应用安全"></a>1.5 web应用安全</h3><h2 id="二、密码学"><a href="#二、密码学" class="headerlink" title="二、密码学"></a>二、密码学</h2><p>OpenSSL </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">openssl version </span><br><span class="line">openssl help </span><br><span class="line">openssl rsa --help </span><br><span class="line">man rsa </span><br></pre></td></tr></table></figure>
+<h3 id="2-1-密码学认知"><a href="#2-1-密码学认知" class="headerlink" title="2.1 密码学认知"></a>2.1 密码学认知</h3><p>目标 </p>
+<ul>
+<li>机密性 </li>
+<li>完整性 </li>
+<li>身份验证 </li>
+<li>不可抵赖性 </li>
+</ul>
+<h3 id="2-2-随机数"><a href="#2-2-随机数" class="headerlink" title="2.2 随机数"></a>2.2 随机数</h3><h3 id="2-3-hash算法"><a href="#2-3-hash算法" class="headerlink" title="2.3 hash算法"></a>2.3 hash算法</h3><h3 id="2-4-对称加密算法"><a href="#2-4-对称加密算法" class="headerlink" title="2.4 对称加密算法"></a>2.4 对称加密算法</h3><p>块密码算法： </p>
+<pre><code>AES，DES,3DES,Blowfish,Rijndael,Camellia,IDEA,SEED 
+
+迭代模式 
+
+ECB,CBC,CTR,CFB,OFB,XTS 
+</code></pre><p>流密码算法 </p>
+<pre><code>RC4，ChaCha 
+</code></pre><h3 id="2-5-消息验证码"><a href="#2-5-消息验证码" class="headerlink" title="2.5 消息验证码"></a>2.5 消息验证码</h3><p>AE(Authenticated Encryption)加密模式 </p>
+<pre><code>Encrypt-and-MAC (E&amp;M) 
+
+MAC-then-Encrypt (MtE) 
+
+Encrypt-then-MAC (EtM) 
+</code></pre><p>AEAD (AE with Associated Data)加密模式 </p>
+<pre><code>CCM模式 
+
+GCM 
+
+ChaCha20-Poly1305 
+</code></pre><h3 id="2-6-公开秘钥算法"><a href="#2-6-公开秘钥算法" class="headerlink" title="2.6 公开秘钥算法"></a>2.6 公开秘钥算法</h3><h3 id="2-7-密钥"><a href="#2-7-密钥" class="headerlink" title="2.7 密钥"></a>2.7 密钥</h3><h3 id="2-8-密钥协商算法"><a href="#2-8-密钥协商算法" class="headerlink" title="2.8 密钥协商算法"></a>2.8 密钥协商算法</h3><h3 id="2-9-椭圆曲线"><a href="#2-9-椭圆曲线" class="headerlink" title="2.9 椭圆曲线"></a>2.9 椭圆曲线</h3><h3 id="2-10-数字签名"><a href="#2-10-数字签名" class="headerlink" title="2.10 数字签名"></a>2.10 数字签名</h3><h3 id="2-11-DSA数字签名算法"><a href="#2-11-DSA数字签名算法" class="headerlink" title="2.11 DSA数字签名算法"></a>2.11 DSA数字签名算法</h3><h3 id="2-12-算法安全性与性能"><a href="#2-12-算法安全性与性能" class="headerlink" title="2.12 算法安全性与性能"></a>2.12 算法安全性与性能</h3><h2 id="三、宏观理解TLS-Transport-Layer-Security"><a href="#三、宏观理解TLS-Transport-Layer-Security" class="headerlink" title="三、宏观理解TLS (Transport Layer Security)"></a>三、宏观理解TLS (Transport Layer Security)</h2><p>TLS/SSL协议位于应用层协议和TCP之间 </p>
+<p>四个目标 </p>
+<ul>
+<li>数据是机密的 </li>
+<li>可操作性 </li>
+<li>可扩展性 </li>
+<li>效率 </li>
+</ul>
+<h3 id="3-1-TLS-SSL协议综述"><a href="#3-1-TLS-SSL协议综述" class="headerlink" title="3.1 TLS/SSL协议综述"></a>3.1 TLS/SSL协议综述</h3><p>HTTPS = HTTP + TLS/SSL </p>
+<p>TLS/SSL协议核心就三大步骤：认证、密钥协商、数据加密 </p>
+<h3 id="3-2-TLS-SSL背后算法"><a href="#3-2-TLS-SSL背后算法" class="headerlink" title="3.2 TLS/SSL背后算法"></a>3.2 TLS/SSL背后算法</h3><p>申请证书流程是非常复杂的，大体流程如下： </p>
+<pre><code>◎服务器实体希望发布一个HTTPS网站（https://www.example.com）。 
+
+◎服务器实体生成公开密钥算法的一对密钥，比如一对RSA密钥。 
+
+◎服务器实体生成一个CSR（Cerificate Signing Request）文件，CSR是证书签名请求文件，其中包含的重要信息是网站的域名（www.example.com）、RSA密钥对的公钥、营业执照，然后将CSR文件发送给CA机构申请证书。 
+
+◎CA机构收到CSR文件后，核实申请者的身份，最简单的核实就是校验域名（www.example.com）的拥有者是不是证书申请者。 
+
+◎一旦审核成功，CA机构用自己的密钥对（比如ECDSA密钥对）的私钥签名CSR文件的内容得到签名值，然后将签名值附在CSR文件后面得到证书文件，证书文件中除了包含申请者的信息，还包括CA机构的信息，比如包括CA机构采用的签名算法（本例中就是ECDSA签名算法）、CA机构的名称。 
+
+◎最终CA机构将证书文件发送给服务器实体。 
+</code></pre><p>客户端如何校验证书，大体流程如下： </p>
+<pre><code>◎浏览器向服务器端发送连接请求https://www.example.com。 
+
+◎服务器接收到请求后，将证书文件和RSA密钥对的公钥发送给浏览器。 
+
+◎浏览器接收到证书文件，从中判断出是某CA机构签发的证书，并且知道了证书签名算法是ECDSA算法，由于浏览器内置了该CA机构的根证书，根证书包含了CA机构的ECDSA公钥，用于验证签名。 
+
+◎浏览器一旦验证签名成功，代表该证书确实是合法CA机构签发的。 
+
+◎浏览器接着校验证书申请者的身份，从证书中取出RSA公钥（注意不是CA机构的公钥）和主机名，假设证书包含的主机也是www.example.com，且连接阶段接收到的RSA公钥等同于证书中包含的RSA公钥，则表示浏览器成功校验了服务器的身份，连接的服务器确实是www.example.com主机的拥有者。 
+</code></pre><h3 id="3-3-HTTPS总结"><a href="#3-3-HTTPS总结" class="headerlink" title="3.3 HTTPS总结"></a>3.3 HTTPS总结</h3><p>证书中包含了两部分信息： </p>
+<pre><code>◎服务器实体信息，比如服务器的主机名、服务器公钥。 
+
+◎CA机构的信息，比如CA机构数字签名算法标识符、签名值 
+</code></pre><h2 id="四、选择HTTPS"><a href="#四、选择HTTPS" class="headerlink" title="四、选择HTTPS"></a>四、选择HTTPS</h2><h3 id="4-1-部署HTTPS"><a href="#4-1-部署HTTPS" class="headerlink" title="4.1 部署HTTPS"></a>4.1 部署HTTPS</h3><h2 id="五、快速搭建HTTPS网站"><a href="#五、快速搭建HTTPS网站" class="headerlink" title="五、快速搭建HTTPS网站"></a>五、快速搭建HTTPS网站</h2><p>如何获取自签名证书 </p>
+<pre><code>1.生成私钥对和CSR 
+
+openssl req -newkey rsa:1024-nodes -keyout example_key.pem -out example_csr.pem 
+
+openssl req命令最终生成两个文件，example_key.pem表示密钥对文件，example_cert.pem表示CSR文件 
+
+2.生成自签名证书 
+
+openssl x509 -signkey example_key.pem -in example_csr.pem -req -days 365-out example_cert.pem     
+
+-signkey表示密钥对文件，-in表示CSR文件，-days表示证书有效期，-out表示最终的证书文件 
+</code></pre><p>基于ACME协议的Certbot客户端可以向免费CA机构Let’sEncrypt申请证书 </p>
+<pre><code>下载certbot客户端 
+
+git clone https://github.com/certbot/certbot 
+
+cd certbot 
+
+一步生成证书 
+
+./certbot-auto certonly --webroot -w /usr/nginx/web -d www.example.com 
+
+
+
+-w表示代码根目录，-d表示要为哪些域名生成证书，--webroot表示安装插件（Certbot客户端有很多插件 
+
+运行结束后，会在/etc/letsencrypt/live/www.example.com目录下生成四个文件，最重要的两个文件是fullchain.pem（完整证书链）和privkey.pem（私钥 
+</code></pre><p>curl https:/www.baidu.com —verbose 查看https详细信息 </p>
+<p>HTTP GET请求可以进行301重定向，而HTTP POST接口无法进行301重定向 </p>
+<p>HSTS标准(HTTP Strict Transport Security),本质是http头部 </p>
+<pre><code>Strict-Transport-Security: max-age=31536000;includeSubDomains;preload 
+
+◎max-age，服务器告诉某个客户端，在31536000秒内，应该实施HSTS标准，这段时间内如果客户端重新访问了HTTPS网站，max-age时间就会被重新刷新。◎includeSubDomains，服务器告诉客户端域名下的所有子域名都实施HSTS标准，不仅仅是发出HSTS HTTP头部的主机才遵循该标准。 
+
+◎preload，简单地说就是浏览器预存了需要实施HSTS标准的网站，详细信息后续介绍。 
+</code></pre><p>实施HSTS的好处是什么呢？主要有以下几点： </p>
+<pre><code>◎当浏览器发现某张证书是自签名证书时，且服务器发出了HSTS头部，不会提示用户是否信任该证书，直接中止访问HTTPS网站。 
+
+◎当用户单击某个http://www.example.com明文连接的时候，且服务器（www.example.com）存在HSTS头部，在发出请求之前，浏览器会将http://www.example.com连接转换为https://www.example.com后再访问。 
+
+◎用户访问https://www.example.com页面，浏览器解析的时候如果发现该页面存在混合内容，且服务器（www.example.com）发出了HSTS头部，则会将www.example.com下所有的明文连接转换为HTTPS连接后再访问。 
+</code></pre><p>CSP机制（Content Security Policy）来有效控制混合内容的加载。 </p>
+<h2 id="六、证书"><a href="#六、证书" class="headerlink" title="六、证书"></a>六、证书</h2><p>PKI（Public Key Infrastructure，称为公钥基础设施） </p>
+<p>HTTPS中最常用的标准就是X.509标准 </p>
+<p><img src="../..//images/image-20220126185841819.png" alt=""></p>
+<p>从证书链的角度看，证书可以分为三种类型，分别是服务器实体证书、中间证书、根证书 </p>
+<pre><code>1）服务器实体证书 
+
+服务器实体证书在证书链的最末端，在图6-3的例子中，服务器实体证书是Let's EncryptAuthority X3签发的，该证书包含了服务器实体的一些信息，比如域名、服务器的公钥。 
+
+2）中间证书 
+
+中间证书在证书链的中间，服务器实体证书的上面。一般情况下，由中间证书签发服务器实体证书，中间证书不一定就是一张证书，中间证书可以由多张证书构成，中间证书还可以签发其他中间证书。 
+
+3）根证书 
+
+根证书称为自签名证书（self-signed），处于证书链中的最顶端，在图6-3的例子中，表示DSTROOT CA的根证书签发了Let's Encrypt Authority X3中间证书。 
+
+其中chain.pem文件就是中间证书，它签发的服务器实体证书是cert.pem, fullchain.pem文件包含了cert.pem和chain.pem文件的内容，构成了完整的证书链 
+</code></pre><h2 id="七、Let‘s-Encrypt-免费证书"><a href="#七、Let‘s-Encrypt-免费证书" class="headerlink" title="七、Let‘s Encrypt 免费证书"></a>七、Let‘s Encrypt 免费证书</h2><h2 id="八、TLS协议分析"><a href="#八、TLS协议分析" class="headerlink" title="八、TLS协议分析"></a>八、TLS协议分析</h2><h2 id="九、HTTPS性能和安全"><a href="#九、HTTPS性能和安全" class="headerlink" title="九、HTTPS性能和安全"></a>九、HTTPS性能和安全</h2><h2 id="十、HTTPS网站实战"><a href="#十、HTTPS网站实战" class="headerlink" title="十、HTTPS网站实战"></a>十、HTTPS网站实战</h2></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="http://starskydata.com">Daisy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://starskydata.com/posts/26010.html">http://starskydata.com/posts/26010.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/HTTPS/">HTTPS</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/54605.html" title="字节码插桩"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">字节码插桩</div></div></a></div><div class="next-post pull-right"><a href="/posts/15937.html" title="阿塞拜疆巴库三日自由行"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">阿塞拜疆巴库三日自由行</div></div></a></div></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> Comment</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Daisy</div><div class="author-info__description">分享计算机相关，旅行，美妆，一个平凡人的生活点滴</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">21</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">10</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81HTTP%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">一、HTTP介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E4%BB%80%E4%B9%88%E6%98%AFweb"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 什么是web</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E7%90%86%E8%A7%A3HTTP"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 理解HTTP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.3.</span> <span class="toc-text">1.3 网络模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-%E5%8D%8F%E8%AE%AE%E5%AE%89%E5%85%A8%E5%88%86%E6%9E%90"><span class="toc-number">1.4.</span> <span class="toc-text">1.4 协议安全分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-web%E5%BA%94%E7%94%A8%E5%AE%89%E5%85%A8"><span class="toc-number">1.5.</span> <span class="toc-text">1.5 web应用安全</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%AF%86%E7%A0%81%E5%AD%A6"><span class="toc-number">2.</span> <span class="toc-text">二、密码学</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E5%AF%86%E7%A0%81%E5%AD%A6%E8%AE%A4%E7%9F%A5"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 密码学认知</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E9%9A%8F%E6%9C%BA%E6%95%B0"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 随机数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-hash%E7%AE%97%E6%B3%95"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 hash算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95"><span class="toc-number">2.4.</span> <span class="toc-text">2.4 对称加密算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-%E6%B6%88%E6%81%AF%E9%AA%8C%E8%AF%81%E7%A0%81"><span class="toc-number">2.5.</span> <span class="toc-text">2.5 消息验证码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-%E5%85%AC%E5%BC%80%E7%A7%98%E9%92%A5%E7%AE%97%E6%B3%95"><span class="toc-number">2.6.</span> <span class="toc-text">2.6 公开秘钥算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-7-%E5%AF%86%E9%92%A5"><span class="toc-number">2.7.</span> <span class="toc-text">2.7 密钥</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-8-%E5%AF%86%E9%92%A5%E5%8D%8F%E5%95%86%E7%AE%97%E6%B3%95"><span class="toc-number">2.8.</span> <span class="toc-text">2.8 密钥协商算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-9-%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF"><span class="toc-number">2.9.</span> <span class="toc-text">2.9 椭圆曲线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-10-%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D"><span class="toc-number">2.10.</span> <span class="toc-text">2.10 数字签名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-11-DSA%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E7%AE%97%E6%B3%95"><span class="toc-number">2.11.</span> <span class="toc-text">2.11 DSA数字签名算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-12-%E7%AE%97%E6%B3%95%E5%AE%89%E5%85%A8%E6%80%A7%E4%B8%8E%E6%80%A7%E8%83%BD"><span class="toc-number">2.12.</span> <span class="toc-text">2.12 算法安全性与性能</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%AE%8F%E8%A7%82%E7%90%86%E8%A7%A3TLS-Transport-Layer-Security"><span class="toc-number">3.</span> <span class="toc-text">三、宏观理解TLS (Transport Layer Security)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-TLS-SSL%E5%8D%8F%E8%AE%AE%E7%BB%BC%E8%BF%B0"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 TLS&#x2F;SSL协议综述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-TLS-SSL%E8%83%8C%E5%90%8E%E7%AE%97%E6%B3%95"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 TLS&#x2F;SSL背后算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-HTTPS%E6%80%BB%E7%BB%93"><span class="toc-number">3.3.</span> <span class="toc-text">3.3 HTTPS总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E9%80%89%E6%8B%A9HTTPS"><span class="toc-number">4.</span> <span class="toc-text">四、选择HTTPS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E9%83%A8%E7%BD%B2HTTPS"><span class="toc-number">4.1.</span> <span class="toc-text">4.1 部署HTTPS</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BAHTTPS%E7%BD%91%E7%AB%99"><span class="toc-number">5.</span> <span class="toc-text">五、快速搭建HTTPS网站</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E8%AF%81%E4%B9%A6"><span class="toc-number">6.</span> <span class="toc-text">六、证书</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81Let%E2%80%98s-Encrypt-%E5%85%8D%E8%B4%B9%E8%AF%81%E4%B9%A6"><span class="toc-number">7.</span> <span class="toc-text">七、Let‘s Encrypt 免费证书</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81TLS%E5%8D%8F%E8%AE%AE%E5%88%86%E6%9E%90"><span class="toc-number">8.</span> <span class="toc-text">八、TLS协议分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%9D%E3%80%81HTTPS%E6%80%A7%E8%83%BD%E5%92%8C%E5%AE%89%E5%85%A8"><span class="toc-number">9.</span> <span class="toc-text">九、HTTPS性能和安全</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E3%80%81HTTPS%E7%BD%91%E7%AB%99%E5%AE%9E%E6%88%98"><span class="toc-number">10.</span> <span class="toc-text">十、HTTPS网站实战</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/19528.html" title="SQL 基础">SQL 基础</a><time datetime="2023-07-17T12:20:53.000Z" title="Created 2023-07-17 16:20:53">2023-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/53592.html" title="数据库系统">数据库系统</a><time datetime="2023-07-17T12:20:53.000Z" title="Created 2023-07-17 16:20:53">2023-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/6358.html" title="Mysql (一)">Mysql (一)</a><time datetime="2023-07-17T12:20:53.000Z" title="Created 2023-07-17 16:20:53">2023-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/18640.html" title="Mysql (三)">Mysql (三)</a><time datetime="2023-07-17T12:20:53.000Z" title="Created 2023-07-17 16:20:53">2023-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/55410.html" title="Mysql (二)">Mysql (二)</a><time datetime="2023-07-17T12:20:53.000Z" title="Created 2023-07-17 16:20:53">2023-07-17</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/img/pink.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Daisy</div><div class="footer_custom_text">Hi, welcome to Daisy's blog.</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="Scroll To Comments"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, '']
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typesetPromise()
+}</script><script>(() => {
+  const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaid.length === 0) return
+  const runMermaid = () => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'drak' : 'default'
+
+    Array.from($mermaid).forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const mermaidThemeConfig = '%%{init:{ \'theme\':\'' + theme + '\'}}%%\n'
+      const mermaidID = 'mermaid-' + index
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+
+      const renderV10 = () => {
+        renderFn.then(({svg}) => {
+          mermaidSrc.insertAdjacentHTML('afterend', svg)
+        })
+      }
+
+      const renderV9 = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      typeof renderFn === 'string' ? renderV9(renderFn) : renderV10()
+    })
+  }
+
+  const loadMermaid = () => {
+    window.loadMermaid ? runMermaid() : getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+  }
+
+  btf.addModeChange('mermaid', runMermaid)
+
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script><script>function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: '86359bb4e81712c59c38',
+      clientSecret: '513930a00de8718c7c1fab2fe09128ec5ef94042',
+      repo: 'DaisyW92.github.io',
+      owner: 'DaisyW92',
+      admin: ['DaisyW92'],
+      id: 'aff82183cc55598e0c7589a5e43e4165',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+    getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.textContent= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !true) {
+  if (true) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><script defer="defer" id="fluttering_ribbon" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

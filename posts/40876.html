@@ -1,0 +1,371 @@
+<!DOCTYPE html><html lang="cn" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>分治、排序、搜索和随机算法Week1 | Daisy's Blog</title><meta name="author" content="Daisy"><meta name="copyright" content="Daisy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="课程地址：https:&amp;#x2F;&amp;#x2F;www.coursera.org&amp;#x2F;specializations&amp;#x2F;algorithms 整数乘法 Integer Multiplication Input：2个n位的数字x，y Output：x*y  常用计算方式例如 1234  * 5678 123456789			5"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://starskydata.com/posts/40876.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="sDPUs3nTAhgMGYrvOmlNqi1vDLQTcKL1X6tCvY_f3ns"/><meta name="baidu-site-verification" content="code-EWEBQNmKjY"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  dateSuffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '分治、排序、搜索和随机算法Week1',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-07-19 16:18:38'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">21</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">10</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/pink.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Daisy's Blog"><span class="site-name">Daisy's Blog</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">分治、排序、搜索和随机算法Week1</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">Created</span><time datetime="2022-10-19T20:00:00.000Z" title="Created 2022-10-20 00:00:00">2022-10-20</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%96%AF%E5%9D%A6%E7%A6%8F%E7%AE%97%E6%B3%95%E8%AF%BE/">斯坦福算法课</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="分治、排序、搜索和随机算法Week1"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>课程地址：<a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.coursera.org/specializations/algorithms">https://www.coursera.org/specializations/algorithms</a></p>
+<h1 id="整数乘法-Integer-Multiplication"><a href="#整数乘法-Integer-Multiplication" class="headerlink" title="整数乘法 Integer Multiplication"></a>整数乘法 Integer Multiplication</h1><ul>
+<li>Input：2个n位的数字x，y</li>
+<li>Output：x*y</li>
+</ul>
+<h2 id="常用计算方式"><a href="#常用计算方式" class="headerlink" title="常用计算方式"></a>常用计算方式</h2><p>例如 1234  * 5678</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">			5 6 7 8</span><br><span class="line">  *   1 2 3 4</span><br><span class="line">_______________</span><br><span class="line">		2 2 7 1 2</span><br><span class="line">	1 7 0 3 4</span><br><span class="line">1 1 3 5 6</span><br><span class="line">5 6 7 8</span><br><span class="line">_______________</span><br><span class="line">7 0 0 6 6 5 2</span><br></pre></td></tr></table></figure>
+<h2 id="Karatsuba-Multiplication"><a href="#Karatsuba-Multiplication" class="headerlink" title="Karatsuba Multiplication"></a>Karatsuba Multiplication</h2><p>典型的分治算法</p>
+<p>$x = 10^{n/2}a + b$   </p>
+<p>$ y = 10^{n/2}c+d$</p>
+<p>则：</p>
+<p>$xy=10^nac + 10^{n/2}(ad+bc)+bd$</p>
+<p>又因为</p>
+<p>$ (a+b)(c+d)=ac +bc +ad +bd $</p>
+<p>$  bc + ad  = (a+b)(c+d)-ac -bc $</p>
+<h3 id="算法说明"><a href="#算法说明" class="headerlink" title="算法说明"></a>算法说明</h3><ul>
+<li>$xy=10^nac + 10^{n/2}(ad+bc)+bd$</li>
+<li>计算$ac$</li>
+<li>计算$bd$</li>
+<li>计算$(a+b)(c+d)$</li>
+<li>计算 $ad + bc =(a+b)(c+d)-ac-bd$</li>
+</ul>
+<p>如果位数n比较多，可以不断递归计算</p>
+<h1 id="归并排序-Merge-Sort"><a href="#归并排序-Merge-Sort" class="headerlink" title="归并排序 Merge Sort"></a>归并排序 Merge Sort</h1><p>一种分治算法</p>
+<ul>
+<li>Input: 乱序的数字数组</li>
+<li>Output: 同样的数字，升序排列</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">		5 4 1 8 7 2 6 3</span><br><span class="line">5 4 1 8         7 2 6 3</span><br><span class="line">		----递归调用----</span><br><span class="line">1 4 5 8					2 3 6 7</span><br><span class="line">		 ----Merge----</span><br><span class="line">		1 2 3 4 5 6 7 8</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="算法说明-1"><a href="#算法说明-1" class="headerlink" title="算法说明"></a>算法说明</h2><ul>
+<li>递归：对数组的前一半排序</li>
+<li>递归：对数组的后一半排序</li>
+<li>将两个数组merge成一组</li>
+</ul>
+<h2 id="python实现"><a href="#python实现" class="headerlink" title="python实现"></a>python实现</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">merge</span>(<span class="params">arr, l, m, r</span>): </span><br><span class="line">    n1 = m - l + <span class="number">1</span></span><br><span class="line">    n2 = r- m </span><br><span class="line">  </span><br><span class="line">    <span class="comment"># 创建临时数组</span></span><br><span class="line">    L = [<span class="number">0</span>] * (n1)</span><br><span class="line">    R = [<span class="number">0</span>] * (n2)</span><br><span class="line">  </span><br><span class="line">    <span class="comment"># 拷贝数据到临时数组 arrays L[] 和 R[] </span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span> , n1): </span><br><span class="line">        L[i] = arr[l + i] </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span> , n2): </span><br><span class="line">        R[j] = arr[m + <span class="number">1</span> + j] </span><br><span class="line">  </span><br><span class="line">    <span class="comment"># 归并临时数组到 arr[l..r] </span></span><br><span class="line">    i = <span class="number">0</span>     <span class="comment"># 初始化第一个子数组的索引</span></span><br><span class="line">    j = <span class="number">0</span>     <span class="comment"># 初始化第二个子数组的索引</span></span><br><span class="line">    k = l     <span class="comment"># 初始归并子数组的索引</span></span><br><span class="line">  </span><br><span class="line">    <span class="keyword">while</span> i &lt; n1 <span class="keyword">and</span> j &lt; n2 : </span><br><span class="line">        <span class="keyword">if</span> L[i] &lt;= R[j]: </span><br><span class="line">            arr[k] = L[i] </span><br><span class="line">            i += <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>: </span><br><span class="line">            arr[k] = R[j] </span><br><span class="line">            j += <span class="number">1</span></span><br><span class="line">        k += <span class="number">1</span></span><br><span class="line">  </span><br><span class="line">    <span class="comment"># 拷贝 L[] 的保留元素</span></span><br><span class="line">    <span class="keyword">while</span> i &lt; n1: </span><br><span class="line">        arr[k] = L[i] </span><br><span class="line">        i += <span class="number">1</span></span><br><span class="line">        k += <span class="number">1</span></span><br><span class="line">  </span><br><span class="line">    <span class="comment"># 拷贝 R[] 的保留元素</span></span><br><span class="line">    <span class="keyword">while</span> j &lt; n2: </span><br><span class="line">        arr[k] = R[j] </span><br><span class="line">        j += <span class="number">1</span></span><br><span class="line">        k += <span class="number">1</span></span><br><span class="line">  </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">mergeSort</span>(<span class="params">arr,l,r</span>): </span><br><span class="line">    <span class="keyword">if</span> l &lt; r: </span><br><span class="line">  </span><br><span class="line">        </span><br><span class="line">        m = <span class="built_in">int</span>((l+(r-<span class="number">1</span>))/<span class="number">2</span>)</span><br><span class="line">  </span><br><span class="line">       </span><br><span class="line">        mergeSort(arr, l, m) </span><br><span class="line">        mergeSort(arr, m+<span class="number">1</span>, r) </span><br><span class="line">        merge(arr, l, m, r) </span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">arr = [<span class="number">12</span>, <span class="number">11</span>, <span class="number">13</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>] </span><br><span class="line">n = <span class="built_in">len</span>(arr) </span><br><span class="line"><span class="built_in">print</span> (<span class="string">&quot;给定的数组&quot;</span>) </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n): </span><br><span class="line">    <span class="built_in">print</span> (<span class="string">&quot;%d&quot;</span> %arr[i]), </span><br><span class="line">  </span><br><span class="line">mergeSort(arr,<span class="number">0</span>,n-<span class="number">1</span>) </span><br><span class="line"><span class="built_in">print</span> (<span class="string">&quot;\n\n排序后的数组&quot;</span>) </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n): </span><br><span class="line">    <span class="built_in">print</span> (<span class="string">&quot;%d&quot;</span> %arr[i]),</span><br></pre></td></tr></table></figure>
+<h2 id="伪代码"><a href="#伪代码" class="headerlink" title="伪代码"></a>伪代码</h2><p><img src="../../../images/image-20221027182742964.png" alt=""></p>
+<h2 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h2><p>长度为m的数组做归并排序，运行时间？</p>
+<p><strong>Merge分析</strong></p>
+<ul>
+<li>2次操作：$i,j$的初始化</li>
+<li>给k赋值</li>
+<li>比较 $A(i),B(j)$ 的值</li>
+<li>给$C(k)$赋值</li>
+<li><p>$i,j$的自增</p>
+</li>
+<li><p>所以，每次merge 需要 $4m+2 \leq 6m$ 次操作 （$m\geq 1$）</p>
+</li>
+<li>merge的时间复杂度为 O(n)</li>
+</ul>
+<p><strong>递归分析</strong></p>
+<ul>
+<li>假设数组长度n为2的幂，每次平均拆分数组，这个过程共有$\log_{2}n$次</li>
+</ul>
+<p><img src="../../../images/image-20221027184605882.png" alt=""></p>
+<ul>
+<li><p>所以，第 $j$ 层有 $2^j$ 个节点，每个节点有 $n/2^j$ 个数字</p>
+</li>
+<li><p>第 $j$ 层merge的时间复杂度为 </p>
+</li>
+</ul>
+<script type="math/tex; mode=display">
+  2^j * 6\frac {n}{2^j} = 6n</script><ul>
+<li>一共有 $log_{2}n + 1$ 层，所以总的时间复杂度为 </li>
+</ul>
+<script type="math/tex; mode=display">
+6nlog_{2}n+6n</script><h3 id="算法分析指导原则"><a href="#算法分析指导原则" class="headerlink" title="算法分析指导原则"></a>算法分析指导原则</h3><ol>
+<li>使用最坏的情况来分析</li>
+<li>不要过分关注小的常数项或低阶项</li>
+<li>使用渐进分析，关注大的输入项的情况</li>
+</ol>
+<p>总的来说，快的算法 $\approx$  最坏情况的运行时间，随着输入项缓慢的增长</p>
+<p>通常的，希望尽可能的接近 $O(n)$ </p>
+<h1 id="渐进分析"><a href="#渐进分析" class="headerlink" title="渐进分析"></a>渐进分析</h1><p>讨论算法设计和分析的基本词汇</p>
+<p>高级思想：抑制常数项（过于依赖系统）和低阶项（与大输入无关）</p>
+<p>例如：$6nlog<em>{2}n+6$ 的运行时间为 $O(nlog</em>{2}n)$</p>
+<h2 id="几个例子"><a href="#几个例子" class="headerlink" title="几个例子"></a>几个例子</h2><h3 id="一个循环"><a href="#一个循环" class="headerlink" title="一个循环"></a>一个循环</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">for i = 1 to n do</span><br><span class="line">	if A[i] == t then</span><br><span class="line">		Return TRUE</span><br><span class="line">RETURN FALSE</span><br></pre></td></tr></table></figure>
+<p>时间复杂度为 $O(n)$</p>
+<h3 id="两个循环"><a href="#两个循环" class="headerlink" title="两个循环"></a>两个循环</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">for i = 1 to n do</span><br><span class="line">	if A[i] == t then</span><br><span class="line">		Return TRUE</span><br><span class="line">for i = 1 to n do</span><br><span class="line">	if B[i] == t then</span><br><span class="line">		Return TRUE</span><br><span class="line">RETURN FALSE</span><br></pre></td></tr></table></figure>
+<p>时间复杂度为 $O(n)$</p>
+<h3 id="两个嵌套循环"><a href="#两个嵌套循环" class="headerlink" title="两个嵌套循环"></a>两个嵌套循环</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for i = 1 to n do</span><br><span class="line">	for j = 1 to n do</span><br><span class="line">		if A[i] == B[j] then</span><br><span class="line">			Return TRUE</span><br><span class="line">RETURN FALSE</span><br></pre></td></tr></table></figure>
+<p>时间复杂度为 $O(n^2)$</p>
+<h3 id="两个嵌套循环2"><a href="#两个嵌套循环2" class="headerlink" title="两个嵌套循环2"></a>两个嵌套循环2</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for i = 1 to n do</span><br><span class="line">	for j = i+1 to n do</span><br><span class="line">		if A[i] == A[j] then</span><br><span class="line">			Return TRUE</span><br><span class="line">RETURN FALSE</span><br></pre></td></tr></table></figure>
+<p>时间复杂度为 $O(n^2)$</p>
+<h2 id="大-O-符号"><a href="#大-O-符号" class="headerlink" title="大  $O$   符号"></a>大  $O$   符号</h2><p>$T(n) = O(f(n))$  当且仅当存在常数$c,n_0 &gt; 0$ 时，对 $\forall n \geq n_0 $ 有  $T(n) \leq c*f(n)$ </p>
+<p>注意：$c, n_0$ 与 $n$ 无关</p>
+<p><img src="../../../images/image-20221028105857026.png" alt=""></p>
+<h3 id="举例分析"><a href="#举例分析" class="headerlink" title="举例分析"></a>举例分析</h3><blockquote>
+<p>例一</p>
+</blockquote>
+<p>如果 $T(n) =a_kn^k + …+ a_1n+a_0$ ，则 $T(n) = O(n^k)$</p>
+<p>假设 $n<em>0 = 1$ ，$c = |a_k|+|a</em>{k-1}|+..+|a_1|+|a_0|$ ，需要证明 $\forall{n} \geq 1, T(n) \leq c * n^k$</p>
+<script type="math/tex; mode=display">
+\begin{align}
+T(n) &\leq |a_k|n^k+...+|a_1|n+|a_0| \\
+&     \leq |a_k|n^k+...+|a_1|n^k+|a_0|n^k \\
+&     =c * n^k
+\end{align}</script><h2 id="大-Omega-符号"><a href="#大-Omega-符号" class="headerlink" title="大 $\Omega$ 符号"></a>大 $\Omega$ 符号</h2><p>$T(n) = \Omega(f(n))$  当且仅当存在常数$c,n_0 &gt; 0$ 时，对 $\forall n \geq n_0 $ 有  $T(n) \geq c*f(n)$ </p>
+<p><img src="../../../images/image-20221028120038885.png" alt="image-20221028120038885"></p>
+<h2 id="大-Theta-符号"><a href="#大-Theta-符号" class="headerlink" title="大 $\Theta$ 符号"></a>大 $\Theta$ 符号</h2><p>$T(n) = \Theta(f(n))$  当且仅当存在常数$c_1,c_2,n_0 &gt; 0$ 时，对 $\forall n \geq n_0 $ 有  $c_1f(n) \leq T(n) \leq c_2*f(n)$ </p>
+<p>$T(n) = \Theta(f(n))$  等价于   $T(n) = O(f(n))$ 且 $T(n) = /Omega(f(n))$</p>
+<h2 id="小-o-符号"><a href="#小-o-符号" class="headerlink" title="小 $o$ 符号"></a>小 $o$ 符号</h2><p> $T(n) = o(f(n))$ 当且仅当 $\forall c&gt;0$ ,存在常数 $c &gt;0$ , 对 $\forall n \geq n_0 $ 有  $T(n) \leq c*f(n)$ </p>
+<p>举例： $\forall k \geq 1, n^{k-1} = o(n^k)$</p>
+<h2 id="补充举例"><a href="#补充举例" class="headerlink" title="补充举例"></a>补充举例</h2><h3 id="例一"><a href="#例一" class="headerlink" title="例一"></a>例一</h3><p>证明 $2^(n+10) = O(2^n)$</p>
+<p>需要找到常数 $c,n_0$ ，满足 $2^(n+10) \leq c*2^n，n \geq n_0$</p>
+<p>$ c = 1024, n_0 = 1$ 即可</p>
+<h3 id="例二"><a href="#例二" class="headerlink" title="例二"></a>例二</h3><p>证明 $ 2^{10n} \neq O(2^n)$</p>
+<p>反证法，如果  $ 2^{10n} =  O(2^n)$ ，则存在常数$c, n_0 \geq 0$, $2^{10n} \leq c*2^n, n\geq n_0$</p>
+<p>即 $2^{9n} \leq c, n \geq n_0$</p>
+<p>上面式子很明显是不成立的</p>
+<h3 id="例三"><a href="#例三" class="headerlink" title="例三"></a>例三</h3><p>证明： <script type="math/tex">max\left\{f,g\right\} = \Theta(f(n) + g(n))</script></p>
+<script type="math/tex; mode=display">
+max\left\{f,g\right\} \leq f(n)+g(n) \leq 2*max\left\{f,g\right\} \\
+\frac{1}{2} (f(n)+g(n)) \leq max\left\{f,g\right\} \leq f(n) + g(n) \\</script></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="http://starskydata.com">Daisy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://starskydata.com/posts/40876.html">http://starskydata.com/posts/40876.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%AE%97%E6%B3%95/">算法</a><a class="post-meta__tags" href="/tags/%E6%96%AF%E5%9D%A6%E7%A6%8F%E7%AE%97%E6%B3%95%E8%AF%BE/">斯坦福算法课</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/54874.html" title="分治、排序、搜索和随机算法 Week1 Problem Set"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">分治、排序、搜索和随机算法 Week1 Problem Set</div></div></a></div><div class="next-post pull-right"><a href="/posts/35230.html" title="ArrayList"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">ArrayList</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/posts/54874.html" title="分治、排序、搜索和随机算法 Week1 Problem Set"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-10-20</div><div class="title">分治、排序、搜索和随机算法 Week1 Problem Set</div></div></a></div><div><a href="/posts/40684.html" title="分治、排序、搜索和随机算法Week2"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-12-21</div><div class="title">分治、排序、搜索和随机算法Week2</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> Comment</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Daisy</div><div class="author-info__description">分享计算机相关，旅行，美妆，一个平凡人的生活点滴</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">21</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">10</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%B4%E6%95%B0%E4%B9%98%E6%B3%95-Integer-Multiplication"><span class="toc-number">1.</span> <span class="toc-text">整数乘法 Integer Multiplication</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E8%AE%A1%E7%AE%97%E6%96%B9%E5%BC%8F"><span class="toc-number">1.1.</span> <span class="toc-text">常用计算方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Karatsuba-Multiplication"><span class="toc-number">1.2.</span> <span class="toc-text">Karatsuba Multiplication</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%97%E6%B3%95%E8%AF%B4%E6%98%8E"><span class="toc-number">1.2.1.</span> <span class="toc-text">算法说明</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F-Merge-Sort"><span class="toc-number">2.</span> <span class="toc-text">归并排序 Merge Sort</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%97%E6%B3%95%E8%AF%B4%E6%98%8E-1"><span class="toc-number">2.1.</span> <span class="toc-text">算法说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#python%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.2.</span> <span class="toc-text">python实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%AA%E4%BB%A3%E7%A0%81"><span class="toc-number">2.3.</span> <span class="toc-text">伪代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="toc-number">2.4.</span> <span class="toc-text">时间复杂度</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90%E6%8C%87%E5%AF%BC%E5%8E%9F%E5%88%99"><span class="toc-number">2.4.1.</span> <span class="toc-text">算法分析指导原则</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%90%E8%BF%9B%E5%88%86%E6%9E%90"><span class="toc-number">3.</span> <span class="toc-text">渐进分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%A0%E4%B8%AA%E4%BE%8B%E5%AD%90"><span class="toc-number">3.1.</span> <span class="toc-text">几个例子</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E5%BE%AA%E7%8E%AF"><span class="toc-number">3.1.1.</span> <span class="toc-text">一个循环</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%A4%E4%B8%AA%E5%BE%AA%E7%8E%AF"><span class="toc-number">3.1.2.</span> <span class="toc-text">两个循环</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%A4%E4%B8%AA%E5%B5%8C%E5%A5%97%E5%BE%AA%E7%8E%AF"><span class="toc-number">3.1.3.</span> <span class="toc-text">两个嵌套循环</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%A4%E4%B8%AA%E5%B5%8C%E5%A5%97%E5%BE%AA%E7%8E%AF2"><span class="toc-number">3.1.4.</span> <span class="toc-text">两个嵌套循环2</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%A7-O-%E7%AC%A6%E5%8F%B7"><span class="toc-number">3.2.</span> <span class="toc-text">大  $O$   符号</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B%E5%88%86%E6%9E%90"><span class="toc-number">3.2.1.</span> <span class="toc-text">举例分析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%A7-Omega-%E7%AC%A6%E5%8F%B7"><span class="toc-number">3.3.</span> <span class="toc-text">大 $\Omega$ 符号</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%A7-Theta-%E7%AC%A6%E5%8F%B7"><span class="toc-number">3.4.</span> <span class="toc-text">大 $\Theta$ 符号</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%8F-o-%E7%AC%A6%E5%8F%B7"><span class="toc-number">3.5.</span> <span class="toc-text">小 $o$ 符号</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%A5%E5%85%85%E4%B8%BE%E4%BE%8B"><span class="toc-number">3.6.</span> <span class="toc-text">补充举例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E4%B8%80"><span class="toc-number">3.6.1.</span> <span class="toc-text">例一</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E4%BA%8C"><span class="toc-number">3.6.2.</span> <span class="toc-text">例二</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E4%B8%89"><span class="toc-number">3.6.3.</span> <span class="toc-text">例三</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/19528.html" title="SQL 基础">SQL 基础</a><time datetime="2023-07-17T12:20:53.000Z" title="Created 2023-07-17 16:20:53">2023-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/53592.html" title="数据库系统">数据库系统</a><time datetime="2023-07-17T12:20:53.000Z" title="Created 2023-07-17 16:20:53">2023-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/6358.html" title="Mysql (一)">Mysql (一)</a><time datetime="2023-07-17T12:20:53.000Z" title="Created 2023-07-17 16:20:53">2023-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/18640.html" title="Mysql (三)">Mysql (三)</a><time datetime="2023-07-17T12:20:53.000Z" title="Created 2023-07-17 16:20:53">2023-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/55410.html" title="Mysql (二)">Mysql (二)</a><time datetime="2023-07-17T12:20:53.000Z" title="Created 2023-07-17 16:20:53">2023-07-17</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/img/pink.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Daisy</div><div class="footer_custom_text">Hi, welcome to Daisy's blog.</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="Scroll To Comments"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, '']
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typesetPromise()
+}</script><script>(() => {
+  const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaid.length === 0) return
+  const runMermaid = () => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'drak' : 'default'
+
+    Array.from($mermaid).forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const mermaidThemeConfig = '%%{init:{ \'theme\':\'' + theme + '\'}}%%\n'
+      const mermaidID = 'mermaid-' + index
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+
+      const renderV10 = () => {
+        renderFn.then(({svg}) => {
+          mermaidSrc.insertAdjacentHTML('afterend', svg)
+        })
+      }
+
+      const renderV9 = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      typeof renderFn === 'string' ? renderV9(renderFn) : renderV10()
+    })
+  }
+
+  const loadMermaid = () => {
+    window.loadMermaid ? runMermaid() : getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+  }
+
+  btf.addModeChange('mermaid', runMermaid)
+
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script><script>function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: '86359bb4e81712c59c38',
+      clientSecret: '513930a00de8718c7c1fab2fe09128ec5ef94042',
+      repo: 'DaisyW92.github.io',
+      owner: 'DaisyW92',
+      admin: ['DaisyW92'],
+      id: 'e89f5b8375dbf668ae97401cd318082c',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+    getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.textContent= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !true) {
+  if (true) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><script defer="defer" id="fluttering_ribbon" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
